@@ -8,44 +8,42 @@
   <style>
     :root { --gap: 12px; --radius: 12px; --shadow: 0 6px 24px rgba(0,0,0,.08); }
     * { box-sizing: border-box; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      margin: 0; padding: 20px; max-width: 980px; margin-inline: auto; line-height: 1.4; }
-    header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap); margin-bottom: 16px; }
-    h1 { font-size: 1.4rem; margin: 0; }
-    .card { background: canvas; border: 1px solid color-mix(in oklab, CanvasText 15%, Canvas 85%);
-            border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
-    .row { display: grid; grid-template-columns: 1fr auto; gap: var(--gap); }
-    .stack { display: grid; gap: var(--gap); }
-    input, button, select { font: inherit; padding: 10px 12px; border-radius: 10px;
-      border: 1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); background: canvas; color: CanvasText; }
-    button { cursor: pointer; border: none; box-shadow: var(--shadow); }
-    button.primary { background: color-mix(in oklab, #3b82f6 80%, black 0%); color: white; }
-    button.ghost { background: transparent; border: 1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); box-shadow: none; }
+    body { font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      margin:0; padding:20px; max-width:980px; margin-inline:auto; line-height:1.4; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:var(--gap); margin-bottom:16px; }
+    h1 { font-size:1.4rem; margin:0; }
+    .card { background: canvas; border:1px solid color-mix(in oklab, CanvasText 15%, Canvas 85%);
+      border-radius:var(--radius); padding:14px; box-shadow:var(--shadow); }
+    .row { display:grid; grid-template-columns:1fr auto; gap:var(--gap); }
+    .stack { display:grid; gap:var(--gap); }
+    input, button, select { font:inherit; padding:10px 12px; border-radius:10px;
+      border:1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); background:canvas; color:CanvasText; }
+    button { cursor:pointer; border:none; box-shadow:var(--shadow); }
+    button.primary { background:#3b82f6; color:#fff; }
+    button.ghost { background:transparent; border:1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); box-shadow:none; }
     .muted { color: color-mix(in oklab, CanvasText 40%, Canvas 60%); }
-    .film { display: grid; gap: 6px; grid-template-columns: 1fr auto; align-items: start; }
-    .film h3 { margin: 0; font-size: 1rem; }
-    .meta { display: grid; grid-template-columns: repeat(3, max-content) 1fr; gap: 8px 12px; align-items: center; }
-    .meta .col { font-size: .85rem; padding: 4px 8px; border-radius: 8px;
-                 border: 1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); }
-    .meta .avail { grid-column: 1 / -1; font-size: .9rem; }
-    .badges { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-    .badge { font-size: .8rem; padding: 4px 8px; border-radius: 999px;
-             border: 1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); }
-    .yesno { display: inline-flex; gap: 6px; align-items: center; }
-    .pill { padding: 6px 10px; border-radius: 999px; background: color-mix(in oklab, #16a34a 18%, Canvas 82%); }
+    .film { display:grid; gap:6px; grid-template-columns:1fr auto; align-items:start; }
+    .film h3 { margin:0; font-size:1rem; }
+    .meta { display:grid; grid-template-columns:repeat(3,max-content) 1fr; gap:8px 12px; align-items:center; }
+    .meta .col { font-size:.85rem; padding:4px 8px; border-radius:8px;
+                 border:1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); }
+    .meta .avail { grid-column:1/-1; font-size:.9rem; }
+    .badges { display:inline-flex; gap:6px; align-items:center; flex-wrap:wrap; }
+    .badge { font-size:.8rem; padding:4px 8px; border-radius:999px;
+             border:1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); }
+    .yesno { display:inline-flex; gap:6px; align-items:center; }
+    .pill { padding:6px 10px; border-radius:999px; background: color-mix(in oklab, #16a34a 18%, Canvas 82%); }
     .pill.no { background: color-mix(in oklab, #ef4444 18%, Canvas 82%); }
-    .lists { display: grid; gap: var(--gap); }
-    .list { display: grid; gap: 10px; }
-    a { color: inherit; text-decoration: none; }
-    .link { color: #2563eb; text-decoration: underline; }
-    .divider { height: 1px; background: color-mix(in oklab, CanvasText 20%, Canvas 80%); margin: 6px 0; opacity:.5; }
-    .topbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .footer { margin-top: 24px; font-size: .85rem; color: color-mix(in oklab, CanvasText 45%, Canvas 55%); }
-    @media (max-width: 640px) {
-      .row { grid-template-columns: 1fr; }
-      .film { grid-template-columns: 1fr; }
-      .meta { grid-template-columns: repeat(3, max-content); }
-    }
+    .lists { display:grid; gap:var(--gap); }
+    .list { display:grid; gap:10px; }
+    a { color:inherit; text-decoration:none; }
+    .link { color:#2563eb; text-decoration:underline; }
+    .divider { height:1px; background: color-mix(in oklab, CanvasText 20%, Canvas 80%); margin:6px 0; opacity:.5; }
+    .topbar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .footer { margin-top:24px; font-size:.85rem; color: color-mix(in oklab, CanvasText 45%, Canvas 55%); }
+    #err { position:fixed; left:8px; right:8px; bottom:8px; padding:10px; border-radius:10px;
+      background:#fee; border:1px solid #f99; color:#900; font:14px/1.3 system-ui; display:none; z-index:9999; }
+    @media (max-width:640px){ .row{grid-template-columns:1fr} .film{grid-template-columns:1fr} .meta{grid-template-columns:repeat(3,max-content)} }
   </style>
 </head>
 <body>
@@ -59,6 +57,7 @@
         </select>
       </label>
       <button class="ghost" id="shareBtn">Link teilen</button>
+      <button class="ghost" id="pingBtn" title="Verbindung testen">Verbindung testen</button>
     </div>
   </header>
 
@@ -88,13 +87,208 @@
     <span class="muted">Einfach. Mobilfreundlich. Realtime-Sync via Supabase. Trailer & Streaming via TMDB.</span>
   </div>
 
-<script type="module">
-// --- CONFIG ---
-const SUPABASE_URL = "https://iitbtkuezqahcpudtuac.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdGJ0a3VlenFhaGNwdWR0dWFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4MzQ0MjMsImV4cCI6MjA3MjQxMDQyM30.EepapVMgQC4HwE4LiFT4Xqge9KJPkl9oaVHsR3ERrmsN";
-const TMDB_KEY = "519d0298bfea17e42b5a258cde70b158";
+  <div id="err"></div>
 
-// Rest des JS siehe vorherige Version (ich kürze hier wegen Platz)
-</script>
+  <!-- UMD Builds: Stabil, kein Module-Import nötig -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
+  <script defer>
+  // === KEYS EINTRAGEN ===
+  const SUPABASE_URL = "https://iitbtkuezqahcpudtuac.supabase.co";           // z.B. https://xyzcompany.supabase.co
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdGJ0a3VlenFhaGNwdWR0dWFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4MzQ0MjMsImV4cCI6MjA3MjQxMDQyM30.EepapVMgQC4HwE4LiFT4Xqge9KJPkl9oaVHsR3ERrmsN";  // beginnt meist mit eyJ...
+  const TMDB_KEY = "519d0298bfea17e42b5a258cde70b158";
+
+  // === UI-Refs ===
+  const userSelect = document.getElementById("userSelect");
+  const titleInput = document.getElementById("titleInput");
+  const addBtn = document.getElementById("addBtn");
+  const proposedList = document.getElementById("proposedList");
+  const confirmedList = document.getElementById("confirmedList");
+  const shareBtn = document.getElementById("shareBtn");
+  const pingBtn = document.getElementById("pingBtn");
+  const errBox = document.getElementById("err");
+
+  function showErr(msg){ console.error(msg); errBox.textContent = "Fehler: " + msg; errBox.style.display = "block"; }
+  function hideErr(){ errBox.style.display = "none"; }
+
+  // Name aus URL ?user=David|Tim laden
+  const params = new URLSearchParams(location.search);
+  const initialUser = params.get("user");
+  if (initialUser) userSelect.value = initialUser;
+
+  shareBtn.addEventListener("click", async () => {
+    const url = new URL(location.href);
+    url.searchParams.set("user", userSelect.value);
+    try { await navigator.clipboard.writeText(url.toString());
+      shareBtn.textContent = "Link kopiert ✅"; setTimeout(()=>shareBtn.textContent="Link teilen",1500);
+    } catch { prompt("Link kopieren:", url.toString()); }
+  });
+
+  window.addEventListener("error", (ev)=>showErr(ev.message));
+  window.addEventListener("unhandledrejection", (ev)=>showErr(ev.reason?.message || ev.reason || "Unbekannter Fehler"));
+
+  // === Supabase Client ===
+  let supabaseClient;
+  function sb(){ 
+    if (!window.supabase) { showErr("Supabase SDK nicht geladen"); throw new Error("supabase sdk missing"); }
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.includes("DEINE_")) { 
+      showErr("Supabase Keys/URL fehlen"); throw new Error("keys missing"); 
+    }
+    if (!supabaseClient) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    return supabaseClient;
+  }
+
+  // === TMDB Helpers ===
+  async function tmdb(path) {
+    if (!TMDB_KEY || TMDB_KEY.includes("DEIN_TMDB")) throw new Error("TMDB Key fehlt");
+    const res = await fetch(`https://api.themoviedb.org/3${path}${path.includes("?")?"&":"?"}api_key=${TMDB_KEY}`);
+    if (!res.ok) throw new Error("TMDB " + res.status);
+    return res.json();
+  }
+  function minutesToHM(mins){ if(!mins||isNaN(mins)) return "—"; const h=Math.floor(mins/60), m=mins%60; return `${h}h ${m}m`; }
+  function providerNames(list){ if(!Array.isArray(list)||!list.length) return []; const map=new Map(); for(const p of list) map.set(p.provider_id,p.provider_name); return Array.from(map.values()).sort(); }
+
+  async function enrichMovieByTitle(title){
+    const q = encodeURIComponent(title);
+    const search = await tmdb(`/search/movie?query=${q}&include_adult=false&language=de-DE`);
+    if (!search.results?.length) return null;
+    const movie = search.results[0];
+    const details = await tmdb(`/movie/${movie.id}?language=de-DE`);
+    const year = (details.release_date||"").slice(0,4) || null;
+    const runtime = details.runtime || null;
+    const genres = (details.genres||[]).map(g=>g.name).join(", ") || null;
+    const vids = await tmdb(`/movie/${movie.id}/videos?language=de-DE`);
+    const trailer = (vids.results||[]).find(v=>v.type==="Trailer" && v.site==="YouTube") || (vids.results||[]).find(v=>v.site==="YouTube");
+    const trailer_url = trailer ? `https://www.youtube.com/watch?v=${trailer.key}`
+                                : `https://www.youtube.com/results?search_query=${encodeURIComponent(details.title+' Trailer')}`;
+    const prov = await tmdb(`/movie/${movie.id}/watch/providers`);
+    const de = prov.results?.DE || {};
+    const flatrate = providerNames(de.flatrate);
+    const rent = providerNames(de.rent);
+    const buy = providerNames(de.buy);
+
+    return { title: details.title || movie.title, year, runtime, genres, trailer_url,
+      providers_flatrate: flatrate.join(", "), providers_rent: rent.join(", "), providers_buy: buy.join(", ") };
+  }
+
+  // === DB Ops ===
+  async function addFilm(title, currentUser){
+    hideErr();
+    if (!title.trim()) return;
+    addBtn.disabled = true; addBtn.textContent = "TMDB…";
+    const info = await enrichMovieByTitle(title).catch(e => (showErr("TMDB: "+e.message), null));
+    addBtn.textContent = "Supabase…";
+    const base = {
+      title: title.trim(),
+      year: info?.year || null,
+      runtime: info?.runtime || null,
+      genres: info?.genres || null,
+      trailer_url: info?.trailer_url || null,
+      providers_flatrate: info?.providers_flatrate || null,
+      providers_rent: info?.providers_rent || null,
+      providers_buy: info?.providers_buy || null,
+      proposer: currentUser,
+      yes_david: currentUser === "David",
+      yes_tim: currentUser === "Tim"
+    };
+    const { error } = await sb().from("films").insert(base);
+    addBtn.disabled = false; addBtn.textContent = "Vorschlagen"; titleInput.value = "";
+    if (error) showErr("Supabase insert: " + error.message);
+  }
+
+  async function toggleVote(id, user, value){
+    hideErr();
+    const patch = user === "David" ? { yes_david: value } : { yes_tim: value };
+    const { error } = await sb().from("films").update(patch).eq("id", id);
+    if (error) showErr("Supabase update: " + error.message);
+  }
+
+  async function loadFilms(){
+    hideErr();
+    const { data, error } = await sb().from("films").select("*").order("created_at",{ascending:false});
+    if (error) { showErr("Supabase select: " + error.message); return; }
+    renderLists(data || []);
+  }
+
+  // Realtime (optional – erst aktiv, wenn in Supabase unter Database→Replication→Realtime für Tabelle films eingeschaltet)
+  try {
+    sb().channel("films-changes")
+      .on("postgres_changes", { event:"*", schema:"public", table:"films" }, loadFilms)
+      .subscribe();
+  } catch (e) { /* wenn Realtime noch aus ist, egal */ }
+
+  function filmItem(f){
+    const me = userSelect.value;
+    const myYes = me === "David" ? f.yes_david : f.yes_tim;
+    const other = me === "David" ? "Tim" : "David";
+    const otherYes = other === "David" ? f.yes_david : f.yes_tim;
+
+    const wrapper = document.createElement("div"); wrapper.className = "film";
+    const left = document.createElement("div");
+    const h3 = document.createElement("h3"); h3.textContent = f.title + (f.year?` (${f.year})`:""); left.appendChild(h3);
+
+    const meta = document.createElement("div"); meta.className = "meta";
+    const colLen = document.createElement("div"); colLen.className="col"; colLen.textContent = f.runtime ? minutesToHM(f.runtime) : "—";
+    const colGenre = document.createElement("div"); colGenre.className="col"; colGenre.textContent = f.genres || "—";
+    const colYear = document.createElement("div"); colYear.className="col"; colYear.textContent = f.year || "—";
+    const avail = document.createElement("div"); avail.className = "avail muted";
+
+    const fl = f.providers_flatrate ? f.providers_flatrate.split(",").map(s=>s.trim()).filter(Boolean) : [];
+    const rn = f.providers_rent ? f.providers_rent.split(",").map(s=>s.trim()).filter(Boolean) : [];
+    const by = f.providers_buy ? f.providers_buy.split(",").map(s=>s.trim()).filter(Boolean) : [];
+
+    if (fl.length) {
+      avail.innerHTML = `Streaming (DE): <strong>Flatrate:</strong> ${fl.join(", ")}${rn.length||by.length? " · " : ""}`;
+      if (rn.length) avail.innerHTML += `<strong>Leihen:</strong> ${rn.join(", ")}${by.length? " · " : ""}`;
+      if (by.length) avail.innerHTML += `<strong>Kaufen:</strong> ${by.join(", ")}`;
+    } else if (rn.length || by.length) {
+      avail.innerHTML = `Kein Abo-Streaming (DE). ${rn.length? "<strong>Leihen:</strong> "+rn.join(", ") : ""}${(rn.length&&by.length)?" · ":""}${by.length? "<strong>Kaufen:</strong> "+by.join(", ") : ""}`;
+    } else {
+      avail.innerHTML = `Nicht bei deutschen Diensten gelistet → <strong>DVD/Blu-ray</strong> einplanen.`;
+    }
+
+    meta.append(colLen, colGenre, colYear, avail);
+
+    const badges = document.createElement("div"); badges.className="badges";
+    if (f.trailer_url) { const a=document.createElement("a"); a.className="badge link"; a.href=f.trailer_url; a.target="_blank"; a.rel="noopener"; a.textContent="Trailer ▶"; badges.appendChild(a); }
+    const p = document.createElement("span"); p.className="badge"; p.textContent = "Vorgeschlagen von: " + f.proposer; badges.appendChild(p);
+
+    left.append(meta, badges);
+
+    const actions = document.createElement("div"); actions.className="yesno";
+    const meBtn = document.createElement("button"); meBtn.className="pill"+(myYes?"":" no"); meBtn.textContent = me + (myYes?" ✔":" ✖");
+    meBtn.onclick = () => toggleVote(f.id, me, !myYes);
+    const otherBtn = document.createElement("button"); otherBtn.className="pill"+(otherYes?"":" no"); otherBtn.textContent = other + (otherYes?" ✔":" ✖"); otherBtn.disabled = true;
+    actions.append(meBtn, otherBtn);
+
+    wrapper.append(left, actions);
+    return wrapper;
+  }
+
+  function renderLists(all){
+    proposedList.innerHTML = ""; confirmedList.innerHTML = "";
+    const confirmed = all.filter(f=>f.yes_david && f.yes_tim);
+    const proposed = all.filter(f=>!(f.yes_david && f.yes_tim));
+    for (const f of confirmed){ confirmedList.appendChild(filmItem(f)); const div=document.createElement("div"); div.className="divider"; confirmedList.appendChild(div); }
+    for (const f of proposed){ proposedList.appendChild(filmItem(f)); const div=document.createElement("div"); div.className="divider"; proposedList.appendChild(div); }
+  }
+
+  addBtn.addEventListener("click", () => addFilm(titleInput.value, userSelect.value));
+  titleInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") addFilm(titleInput.value, userSelect.value); });
+
+  pingBtn.addEventListener("click", async ()=>{
+    try{
+      hideErr();
+      if (!sb()) return;
+      const { error } = await sb().from("films").select("id").limit(1);
+      if (error) showErr("Supabase select: " + error.message);
+      else { pingBtn.textContent = "OK ✅"; setTimeout(()=>pingBtn.textContent="Verbindung testen", 1500); }
+    } catch(e){ showErr(e.message||e); }
+  });
+
+  // Initial load
+  (async ()=>{ try{ await loadFilms(); }catch(e){ showErr(e.message||e); }})();
+  </script>
 </body>
 </html>
+
+
