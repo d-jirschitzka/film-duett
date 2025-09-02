@@ -196,8 +196,8 @@ if (!window.supabase) {
       providers_rent: info?.providers_rent || null,
       providers_buy: info?.providers_buy || null,
       proposer: currentUser,
-      yes_david: currentUser === "David",
-      yes_tim: currentUser === "Tim"
+      yes_david: currentUser === "David" ? true : null,
+      yes_tim:   currentUser === "Tim"   ? true : null
     };
     const { error } = await sb().from("films").insert(base);
     addBtn.disabled = false; addBtn.textContent = "Vorschlagen"; titleInput.value = "";
@@ -226,57 +226,126 @@ if (!window.supabase) {
   } catch (e) { /* wenn Realtime noch aus ist, egal */ }
 
   function filmItem(f){
-    const me = userSelect.value;
-    const myYes = me === "David" ? f.yes_david : f.yes_tim;
-    const other = me === "David" ? "Tim" : "David";
-    const otherYes = other === "David" ? f.yes_david : f.yes_tim;
+  const me = userSelect.value;
+  const myKey = me === "David" ? "yes_david" : "yes_tim";
+  const otherName = me === "David" ? "Tim" : "David";
+  const otherKey = otherName === "David" ? "yes_david" : "yes_tim";
 
-    const wrapper = document.createElement("div"); wrapper.className = "film";
-    const left = document.createElement("div");
-    const h3 = document.createElement("h3"); h3.textContent = f.title + (f.year?` (${f.year})`:""); left.appendChild(h3);
+  const myVal = f[myKey];       // true | false | null
+  const otherVal = f[otherKey]; // true | false | null
 
-    const meta = document.createElement("div"); meta.className = "meta";
-    const colLen = document.createElement("div"); colLen.className="col"; colLen.textContent = f.runtime ? minutesToHM(f.runtime) : "—";
-    const colGenre = document.createElement("div"); colGenre.className="col"; colGenre.textContent = f.genres || "—";
-    const colYear = document.createElement("div"); colYear.className="col"; colYear.textContent = f.year || "—";
-    const avail = document.createElement("div"); avail.className = "avail muted";
+  const wrapper = document.createElement("div");
+  wrapper.className = "film";
+  wrapper.dataset.id = f.id;
 
-    const fl = f.providers_flatrate ? f.providers_flatrate.split(",").map(s=>s.trim()).filter(Boolean) : [];
-    const rn = f.providers_rent ? f.providers_rent.split(",").map(s=>s.trim()).filter(Boolean) : [];
-    const by = f.providers_buy ? f.providers_buy.split(",").map(s=>s.trim()).filter(Boolean) : [];
+  // Titel
+  const left = document.createElement("div");
+  const h3 = document.createElement("h3");
+  h3.textContent = f.title + (f.year ? ` (${f.year})` : "");
+  left.appendChild(h3);
 
-    if (fl.length) {
-      avail.innerHTML = `Streaming (DE): <strong>Flatrate:</strong> ${fl.join(", ")}${rn.length||by.length? " · " : ""}`;
-      if (rn.length) avail.innerHTML += `<strong>Leihen:</strong> ${rn.join(", ")}${by.length? " · " : ""}`;
-      if (by.length) avail.innerHTML += `<strong>Kaufen:</strong> ${by.join(", ")}`;
-    } else if (rn.length || by.length) {
-      avail.innerHTML = `Kein Abo-Streaming (DE). ${rn.length? "<strong>Leihen:</strong> "+rn.join(", ") : ""}${(rn.length&&by.length)?" · ":""}${by.length? "<strong>Kaufen:</strong> "+by.join(", ") : ""}`;
-    } else {
-      avail.innerHTML = `Nicht bei deutschen Diensten gelistet → <strong>DVD/Blu-ray</strong> einplanen.`;
-    }
+  // Meta (Länge/Genre/Jahr + Verfügbarkeit)
+  const meta = document.createElement("div"); meta.className = "meta";
+  const colLen = document.createElement("div"); colLen.className="col"; colLen.textContent = f.runtime ? minutesToHM(f.runtime) : "—";
+  const colGenre = document.createElement("div"); colGenre.className="col"; colGenre.textContent = f.genres || "—";
+  const colYear = document.createElement("div"); colYear.className="col"; colYear.textContent = f.year || "—";
+  const avail = document.createElement("div"); avail.className = "avail muted";
 
-    meta.append(colLen, colGenre, colYear, avail);
+  const fl = f.providers_flatrate ? f.providers_flatrate.split(",").map(s=>s.trim()).filter(Boolean) : [];
+  const rn = f.providers_rent ? f.providers_rent.split(",").map(s=>s.trim()).filter(Boolean) : [];
+  const by = f.providers_buy ? f.providers_buy.split(",").map(s=>s.trim()).filter(Boolean) : [];
 
-    const badges = document.createElement("div"); badges.className="badges";
-    if (f.trailer_url) { const a=document.createElement("a"); a.className="badge link"; a.href=f.trailer_url; a.target="_blank"; a.rel="noopener"; a.textContent="Trailer ▶"; badges.appendChild(a); }
-    const p = document.createElement("span"); p.className="badge"; p.textContent = "Vorgeschlagen von: " + f.proposer; badges.appendChild(p);
-
-    left.append(meta, badges);
-
-    const actions = document.createElement("div"); actions.className="yesno";
-    const meBtn = document.createElement("button"); meBtn.className="pill"+(myYes?"":" no"); meBtn.textContent = me + (myYes?" ✔":" ✖");
-    meBtn.onclick = () => toggleVote(f.id, me, !myYes);
-    const otherBtn = document.createElement("button"); otherBtn.className="pill"+(otherYes?"":" no"); otherBtn.textContent = other + (otherYes?" ✔":" ✖"); otherBtn.disabled = true;
-    actions.append(meBtn, otherBtn);
-
-    wrapper.append(left, actions);
-    return wrapper;
+  if (fl.length) {
+    avail.innerHTML = `Streaming (DE): <strong>Flatrate:</strong> ${fl.join(", ")}${rn.length||by.length? " · " : ""}`;
+    if (rn.length) avail.innerHTML += `<strong>Leihen:</strong> ${rn.join(", ")}${by.length? " · " : ""}`;
+    if (by.length) avail.innerHTML += `<strong>Kaufen:</strong> ${by.join(", ")}`;
+  } else if (rn.length || by.length) {
+    avail.innerHTML = `Kein Abo-Streaming (DE). ${rn.length? "<strong>Leihen:</strong> "+rn.join(", ") : ""}${(rn.length&&by.length)?" · ":""}${by.length? "<strong>Kaufen:</strong> "+by.join(", ") : ""}`;
+  } else {
+    avail.innerHTML = `Nicht bei deutschen Diensten gelistet → <strong>DVD/Blu-ray</strong> einplanen.`;
   }
+
+  meta.append(colLen, colGenre, colYear, avail);
+
+  // Badges (Trailer + vorgeschlagen von + Status vom anderen)
+  const badges = document.createElement("div"); badges.className = "badges";
+  if (f.trailer_url) {
+    const a = document.createElement("a");
+    a.className = "badge link"; a.href = f.trailer_url; a.target = "_blank"; a.rel = "noopener";
+    a.textContent = "Trailer ▶";
+    badges.appendChild(a);
+  }
+  const p = document.createElement("span"); p.className = "badge"; p.textContent = "Vorgeschlagen von: " + f.proposer;
+  badges.appendChild(p);
+
+  // Status-Badge (anderer)
+  const status = document.createElement("span");
+  status.className = "badge";
+  if (otherVal === null) { status.style.borderColor = "#f59e0b"; status.textContent = `${otherName}: wartet …`; }
+  else if (otherVal === false) { status.style.borderColor = "#ef4444"; status.textContent = `${otherName}: Nein`; }
+  else { status.style.borderColor = "#16a34a"; status.textContent = `${otherName}: Ja`; }
+  badges.appendChild(status);
+
+  left.append(meta, badges);
+
+  // Rechte Seite (Buttons)
+  const actions = document.createElement("div"); actions.className = "yesno";
+
+  // Mein Button (optimistic toggle)
+  const meBtn = document.createElement("button");
+  const setMeBtn = (val) => {
+    meBtn.className = "pill" + (val ? "" : " no");
+    meBtn.textContent = me + (val ? " ✔" : " ✖");
+  };
+  setMeBtn(!!myVal); // null -> rot (✖) als „noch nicht bestätigt/kein Ja“
+
+  meBtn.title = "Deine Stimme umschalten";
+  meBtn.onclick = async () => {
+    const newVal = !(!!(f[myKey])); // true -> false, false/null -> true
+    const oldVal = f[myKey];
+    // Optimistic UI
+    f[myKey] = newVal; setMeBtn(newVal);
+    try {
+      const { error } = await sb().from("films").update({ [myKey]: newVal }).eq("id", f.id);
+      if (error) { f[myKey] = oldVal; setMeBtn(!!oldVal); showErr("Supabase update: " + error.message); }
+      else {
+        moveItemOptimistically(f.id, newVal, f[otherKey] === true);
+      }
+    } catch (e) { f[myKey] = oldVal; setMeBtn(!!oldVal); showErr(e.message||e); }
+  };
+
+  // Anderer (nur Anzeige)
+  const otherBtn = document.createElement("button");
+  otherBtn.className = "pill" + (otherVal ? "" : " no");
+  otherBtn.textContent = otherName + (otherVal ? " ✔" : (otherVal === false ? " ✖" : " …"));
+  otherBtn.disabled = true;
+  otherBtn.title = "Wird vom anderen bestätigt";
+
+  // Delete-Button mit Bestätigung & Optimistic Remove
+  const delBtn = document.createElement("button");
+  delBtn.className = "pill no";
+  delBtn.textContent = "Löschen 🗑";
+  delBtn.title = "Diesen Film löschen";
+  delBtn.onclick = async () => {
+    if (!confirm(`Wirklich löschen: "${f.title}"?`)) return;
+    const parent = wrapper.parentElement;
+    const divider = wrapper.nextElementSibling && wrapper.nextElementSibling.classList.contains("divider") ? wrapper.nextElementSibling : null;
+    wrapper.remove(); if (divider) divider.remove();
+    try {
+      const { error } = await sb().from("films").delete().eq("id", f.id);
+      if (error) { showErr("Supabase delete: " + error.message); parent && parent.appendChild(wrapper); if (divider) parent.appendChild(divider); }
+    } catch (e) { showErr(e.message||e); parent && parent.appendChild(wrapper); if (divider) parent.appendChild(divider); }
+  };
+
+  actions.append(meBtn, otherBtn, delBtn);
+  wrapper.append(left, actions);
+  return wrapper;
+}
 
   function renderLists(all){
     proposedList.innerHTML = ""; confirmedList.innerHTML = "";
-    const confirmed = all.filter(f=>f.yes_david && f.yes_tim);
-    const proposed = all.filter(f=>!(f.yes_david && f.yes_tim));
+    const confirmed = all.filter(f => f.yes_david === true && f.yes_tim === true);
+    const proposed  = all.filter(f => !(f.yes_david === true && f.yes_tim === true));
     for (const f of confirmed){ confirmedList.appendChild(filmItem(f)); const div=document.createElement("div"); div.className="divider"; confirmedList.appendChild(div); }
     for (const f of proposed){ proposedList.appendChild(filmItem(f)); const div=document.createElement("div"); div.className="divider"; proposedList.appendChild(div); }
   }
@@ -292,6 +361,18 @@ if (!window.supabase) {
       if (error) showErr("Supabase select: " + error.message);
       else { pingBtn.textContent = "OK ✅"; setTimeout(()=>pingBtn.textContent="Verbindung testen", 1500); }
     } catch(e){ showErr(e.message||e); }
+
+    function moveItemOptimistically(id, myNowTrue, otherAlreadyTrue){
+  const node = document.querySelector(`.film[data-id="${id}"]`);
+  if (!node) return;
+  const goConfirmed = otherAlreadyTrue && myNowTrue;
+  const target = goConfirmed ? confirmedList : proposedList;
+  if (node.parentElement === target) return;
+  const divider = node.nextElementSibling && node.nextElementSibling.classList.contains("divider") ? node.nextElementSibling : null;
+  node.remove(); if (divider) divider.remove();
+  target.appendChild(node);
+  const div = document.createElement("div"); div.className = "divider"; target.appendChild(div);
+}
   });
 
   // Initial load
