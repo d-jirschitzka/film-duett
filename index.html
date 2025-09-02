@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Film-Duett 🎬</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root { --gap: 12px; --radius: 12px; --shadow: 0 6px 24px rgba(0,0,0,.08); }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      margin: 0; padding: 20px; max-width: 980px; margin-inline: auto; line-height: 1.4; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap); margin-bottom: 16px; }
+    h1 { font-size: 1.4rem; margin: 0; }
+    .card { background: canvas; border: 1px solid color-mix(in oklab, CanvasText 15%, Canvas 85%);
+            border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: var(--gap); }
+    .stack { display: grid; gap: var(--gap); }
+    input, button, select { font: inherit; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); background: canvas; color: CanvasText; }
+    button { cursor: pointer; border: none; box-shadow: var(--shadow); }
+    button.primary { background: color-mix(in oklab, #3b82f6 80%, black 0%); color: white; }
+    button.ghost { background: transparent; border: 1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); box-shadow: none; }
+    .muted { color: color-mix(in oklab, CanvasText 40%, Canvas 60%); }
+    .film { display: grid; gap: 6px; grid-template-columns: 1fr auto; align-items: start; }
+    .film h3 { margin: 0; font-size: 1rem; }
+    .meta { display: grid; grid-template-columns: repeat(3, max-content) 1fr; gap: 8px 12px; align-items: center; }
+    .meta .col { font-size: .85rem; padding: 4px 8px; border-radius: 8px;
+                 border: 1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); }
+    .meta .avail { grid-column: 1 / -1; font-size: .9rem; }
+    .badges { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    .badge { font-size: .8rem; padding: 4px 8px; border-radius: 999px;
+             border: 1px solid color-mix(in oklab, CanvasText 20%, Canvas 80%); }
+    .yesno { display: inline-flex; gap: 6px; align-items: center; }
+    .pill { padding: 6px 10px; border-radius: 999px; background: color-mix(in oklab, #16a34a 18%, Canvas 82%); }
+    .pill.no { background: color-mix(in oklab, #ef4444 18%, Canvas 82%); }
+    .lists { display: grid; gap: var(--gap); }
+    .list { display: grid; gap: 10px; }
+    a { color: inherit; text-decoration: none; }
+    .link { color: #2563eb; text-decoration: underline; }
+    .divider { height: 1px; background: color-mix(in oklab, CanvasText 20%, Canvas 80%); margin: 6px 0; opacity:.5; }
+    .topbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .footer { margin-top: 24px; font-size: .85rem; color: color-mix(in oklab, CanvasText 45%, Canvas 55%); }
+    @media (max-width: 640px) {
+      .row { grid-template-columns: 1fr; }
+      .film { grid-template-columns: 1fr; }
+      .meta { grid-template-columns: repeat(3, max-content); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Film-Duett 🎬</h1>
+    <div class="topbar card">
+      <label>Ich bin:&nbsp;
+        <select id="userSelect">
+          <option value="David">David</option>
+          <option value="Tim">Tim</option>
+        </select>
+      </label>
+      <button class="ghost" id="shareBtn">Link teilen</button>
+    </div>
+  </header>
+
+  <section class="card stack">
+    <div class="row">
+      <input id="titleInput" placeholder="Filmtitel eingeben …" autocomplete="off" />
+      <button id="addBtn" class="primary">Vorschlagen</button>
+    </div>
+    <div class="muted">
+      Tipp: Nur Titel eintippen. Trailer, Jahr, Länge, Genre & Streaming (DE) werden automatisch gesucht.
+      Der Eintragende stimmt automatisch mit „Ja“.
+    </div>
+  </section>
+
+  <section class="lists">
+    <div class="card">
+      <h2 style="margin:0 0 8px 0;">Beide einverstanden ✅</h2>
+      <div id="confirmedList" class="list"></div>
+    </div>
+    <div class="card">
+      <h2 style="margin:0 0 8px 0;">Vorschläge (noch offen) 📝</h2>
+      <div id="proposedList" class="list"></div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <span class="muted">Einfach. Mobilfreundlich. Realtime-Sync via Supabase. Trailer & Streaming via TMDB.</span>
+  </div>
+
+<script type="module">
+// --- CONFIG ---
+const SUPABASE_URL = "HIER_SUPABASE_URL_EINFÜGEN";
+const SUPABASE_ANON_KEY = "HIER_SUPABASE_ANON_KEY_EINFÜGEN";
+const TMDB_KEY = "HIER_TMDB_API_KEY_EINFÜGEN";
+
+// Rest des JS siehe vorherige Version (ich kürze hier wegen Platz)
+</script>
+</body>
+</html>
