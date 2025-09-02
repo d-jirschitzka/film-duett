@@ -89,12 +89,12 @@
 
   <div id="err"></div>
 
-  <!-- UMD Builds: Stabil, kein Module-Import nötig -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" ></script>
+   <!-- UMD Builds: Stabil, kein Module-Import nötig -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script defer>
-  // === KEYS EINTRAGEN ===
-  const SUPABASE_URL = "https://iitbtkuezqahcpudtuac.supabase.co";           // z.B. https://xyzcompany.supabase.co
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdGJ0a3VlenFhaGNwdWR0dWFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4MzQ0MjMsImV4cCI6MjA3MjQxMDQyM30.EepapVMgQC4HwE4LiFT4Xqge9KJPkl9oaVHsR3ERrms";  // beginnt meist mit eyJ...
+  // === KEYS EINTRAGEN (ich lasse deine drin) ===
+  const SUPABASE_URL = "https://iitbtkuezqahcpudtuac.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdGJ0a3VlenFhaGNwdWR0dWFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4MzQ0MjMsImV4cCI6MjA3MjQxMDQyM30.EepapVMgQC4HwE4LiFT4Xqge9KJPkl9oaVHsR3ERrms";
   const TMDB_KEY = "519d0298bfea17e42b5a258cde70b158";
 
   // === UI-Refs ===
@@ -108,13 +108,10 @@
   const errBox = document.getElementById("err");
 
   // Start verzögern, bis window.supabase da ist
-if (!window.supabase) {
-  const wait = () => {
-    if (window.supabase) return; 
-    setTimeout(wait, 50);
-  };
-  wait();
-}
+  if (!window.supabase) {
+    const wait = () => { if (!window.supabase) return setTimeout(wait, 50); };
+    wait();
+  }
 
   function showErr(msg){ console.error(msg); errBox.textContent = "Fehler: " + msg; errBox.style.display = "block"; }
   function hideErr(){ errBox.style.display = "none"; }
@@ -175,8 +172,11 @@ if (!window.supabase) {
     const rent = providerNames(de.rent);
     const buy = providerNames(de.buy);
 
+    const poster_url = movie.poster_path ? `https://image.tmdb.org/t/p/w185${movie.poster_path}` : null;
+
     return { title: details.title || movie.title, year, runtime, genres, trailer_url,
-      providers_flatrate: flatrate.join(", "), providers_rent: rent.join(", "), providers_buy: buy.join(", ") };
+      providers_flatrate: flatrate.join(", "), providers_rent: rent.join(", "), providers_buy: buy.join(", "),
+      poster_url };
   }
 
   // === DB Ops ===
@@ -195,6 +195,7 @@ if (!window.supabase) {
       providers_flatrate: info?.providers_flatrate || null,
       providers_rent: info?.providers_rent || null,
       providers_buy: info?.providers_buy || null,
+      poster_url: info?.poster_url || null,
       proposer: currentUser,
       yes_david: currentUser === "David" ? true : null,
       yes_tim:   currentUser === "Tim"   ? true : null
@@ -226,121 +227,138 @@ if (!window.supabase) {
   } catch (e) { /* wenn Realtime noch aus ist, egal */ }
 
   function filmItem(f){
-  const me = userSelect.value;
-  const myKey = me === "David" ? "yes_david" : "yes_tim";
-  const otherName = me === "David" ? "Tim" : "David";
-  const otherKey = otherName === "David" ? "yes_david" : "yes_tim";
+    const me = userSelect.value;
+    const myKey = me === "David" ? "yes_david" : "yes_tim";
+    const otherName = me === "David" ? "Tim" : "David";
+    const otherKey = otherName === "David" ? "yes_david" : "yes_tim";
 
-  const myVal = f[myKey];       // true | false | null
-  const otherVal = f[otherKey]; // true | false | null
+    const myVal = f[myKey];       // true | false | null
+    const otherVal = f[otherKey]; // true | false | null
 
-  const wrapper = document.createElement("div");
-  wrapper.className = "film";
-  wrapper.dataset.id = f.id;
+    const wrapper = document.createElement("div");
+    wrapper.className = "film";
+    wrapper.dataset.id = f.id;
 
-  // Titel
-  const left = document.createElement("div");
-  const h3 = document.createElement("h3");
-  h3.textContent = f.title + (f.year ? ` (${f.year})` : "");
-  left.appendChild(h3);
+    // Linke Spalte
+    const left = document.createElement("div");
 
-  // Meta (Länge/Genre/Jahr + Verfügbarkeit)
-  const meta = document.createElement("div"); meta.className = "meta";
-  const colLen = document.createElement("div"); colLen.className="col"; colLen.textContent = f.runtime ? minutesToHM(f.runtime) : "—";
-  const colGenre = document.createElement("div"); colGenre.className="col"; colGenre.textContent = f.genres || "—";
-  const colYear = document.createElement("div"); colYear.className="col"; colYear.textContent = f.year || "—";
-  const avail = document.createElement("div"); avail.className = "avail muted";
+    // Poster klein
+    if (f.poster_url) {
+      const img = document.createElement("img");
+      img.src = f.poster_url;
+      img.alt = f.title;
+      img.style.width = "60px";
+      img.style.height = "90px";
+      img.style.borderRadius = "8px";
+      img.style.marginRight = "10px";
+      img.style.objectFit = "cover";
+      img.style.float = "left";
+      img.style.marginBottom = "8px";
+      left.appendChild(img);
+    }
 
-  const fl = f.providers_flatrate ? f.providers_flatrate.split(",").map(s=>s.trim()).filter(Boolean) : [];
-  const rn = f.providers_rent ? f.providers_rent.split(",").map(s=>s.trim()).filter(Boolean) : [];
-  const by = f.providers_buy ? f.providers_buy.split(",").map(s=>s.trim()).filter(Boolean) : [];
+    // Titel
+    const h3 = document.createElement("h3");
+    h3.textContent = f.title + (f.year ? ` (${f.year})` : "");
+    left.appendChild(h3);
 
-  if (fl.length) {
-    avail.innerHTML = `Streaming (DE): <strong>Flatrate:</strong> ${fl.join(", ")}${rn.length||by.length? " · " : ""}`;
-    if (rn.length) avail.innerHTML += `<strong>Leihen:</strong> ${rn.join(", ")}${by.length? " · " : ""}`;
-    if (by.length) avail.innerHTML += `<strong>Kaufen:</strong> ${by.join(", ")}`;
-  } else if (rn.length || by.length) {
-    avail.innerHTML = `Kein Abo-Streaming (DE). ${rn.length? "<strong>Leihen:</strong> "+rn.join(", ") : ""}${(rn.length&&by.length)?" · ":""}${by.length? "<strong>Kaufen:</strong> "+by.join(", ") : ""}`;
-  } else {
-    avail.innerHTML = `Nicht bei deutschen Diensten gelistet → <strong>DVD/Blu-ray</strong> einplanen.`;
+    // Meta (Länge/Genre/Jahr + Verfügbarkeit)
+    const meta = document.createElement("div"); meta.className = "meta";
+    const colLen = document.createElement("div"); colLen.className="col"; colLen.textContent = f.runtime ? minutesToHM(f.runtime) : "—";
+    const colGenre = document.createElement("div"); colGenre.className="col"; colGenre.textContent = f.genres || "—";
+    const colYear = document.createElement("div"); colYear.className="col"; colYear.textContent = f.year || "—";
+    const avail = document.createElement("div"); avail.className = "avail muted";
+
+    const fl = f.providers_flatrate ? f.providers_flatrate.split(",").map(s=>s.trim()).filter(Boolean) : [];
+    const rn = f.providers_rent ? f.providers_rent.split(",").map(s=>s.trim()).filter(Boolean) : [];
+    const by = f.providers_buy ? f.providers_buy.split(",").map(s=>s.trim()).filter(Boolean) : [];
+
+    if (fl.length) {
+      avail.innerHTML = `Streaming (DE): <strong>Flatrate:</strong> ${fl.join(", ")}${rn.length||by.length? " · " : ""}`;
+      if (rn.length) avail.innerHTML += `<strong>Leihen:</strong> ${rn.join(", ")}${by.length? " · " : ""}`;
+      if (by.length) avail.innerHTML += `<strong>Kaufen:</strong> ${by.join(", ")}`;
+    } else if (rn.length || by.length) {
+      avail.innerHTML = `Kein Abo-Streaming (DE). ${rn.length? "<strong>Leihen:</strong> "+rn.join(", ") : ""}${(rn.length&&by.length)?" · ":""}${by.length? "<strong>Kaufen:</strong> "+by.join(", ") : ""}`;
+    } else {
+      avail.innerHTML = `Nicht bei deutschen Diensten gelistet → <strong>DVD/Blu-ray</strong> einplanen.`;
+    }
+
+    meta.append(colLen, colGenre, colYear, avail);
+
+    // Badges (Trailer + vorgeschlagen von + Status vom anderen)
+    const badges = document.createElement("div"); badges.className = "badges";
+    if (f.trailer_url) {
+      const a = document.createElement("a");
+      a.className = "badge link"; a.href = f.trailer_url; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = "Trailer ▶";
+      badges.appendChild(a);
+    }
+    const p = document.createElement("span"); p.className = "badge"; p.textContent = "Vorgeschlagen von: " + f.proposer;
+    badges.appendChild(p);
+
+    // Status-Badge (anderer)
+    const status = document.createElement("span");
+    status.className = "badge";
+    if (otherVal === null) { status.style.borderColor = "#f59e0b"; status.textContent = `${otherName}: wartet …`; }
+    else if (otherVal === false) { status.style.borderColor = "#ef4444"; status.textContent = `${otherName}: Nein`; }
+    else { status.style.borderColor = "#16a34a"; status.textContent = `${otherName}: Ja`; }
+    badges.appendChild(status);
+
+    left.append(meta, badges);
+
+    // Rechte Seite (Buttons)
+    const actions = document.createElement("div"); actions.className = "yesno";
+
+    // Mein Button (optimistic toggle)
+    const meBtn = document.createElement("button");
+    const setMeBtn = (val) => {
+      meBtn.className = "pill" + (val ? "" : " no");
+      meBtn.textContent = me + (val ? " ✔" : " ✖");
+    };
+    setMeBtn(!!myVal); // null -> rot (✖) als „noch nicht bestätigt/kein Ja“
+
+    meBtn.title = "Deine Stimme umschalten";
+    meBtn.onclick = async () => {
+      const newVal = !(!!(f[myKey])); // true -> false, false/null -> true
+      const oldVal = f[myKey];
+      // Optimistic UI
+      f[myKey] = newVal; setMeBtn(newVal);
+      try {
+        const { error } = await sb().from("films").update({ [myKey]: newVal }).eq("id", f.id);
+        if (error) { f[myKey] = oldVal; setMeBtn(!!oldVal); showErr("Supabase update: " + error.message); }
+        else {
+          moveItemOptimistically(f.id, newVal, f[otherKey] === true);
+        }
+      } catch (e) { f[myKey] = oldVal; setMeBtn(!!oldVal); showErr(e.message||e); }
+    };
+
+    // Anderer (nur Anzeige)
+    const otherBtn = document.createElement("button");
+    otherBtn.className = "pill" + (otherVal ? "" : " no");
+    otherBtn.textContent = otherName + (otherVal ? " ✔" : (otherVal === false ? " ✖" : " …"));
+    otherBtn.disabled = true;
+    otherBtn.title = "Wird vom anderen bestätigt";
+
+    // Delete-Button mit Bestätigung & Optimistic Remove
+    const delBtn = document.createElement("button");
+    delBtn.className = "pill no";
+    delBtn.textContent = "Löschen 🗑";
+    delBtn.title = "Diesen Film löschen";
+    delBtn.onclick = async () => {
+      if (!confirm(`Wirklich löschen: "${f.title}"?`)) return;
+      const parent = wrapper.parentElement;
+      const divider = wrapper.nextElementSibling && wrapper.nextElementSibling.classList.contains("divider") ? wrapper.nextElementSibling : null;
+      wrapper.remove(); if (divider) divider.remove();
+      try {
+        const { error } = await sb().from("films").delete().eq("id", f.id);
+        if (error) { showErr("Supabase delete: " + error.message); parent && parent.appendChild(wrapper); if (divider) parent.appendChild(divider); }
+      } catch (e) { showErr(e.message||e); parent && parent.appendChild(wrapper); if (divider) parent.appendChild(divider); }
+    };
+
+    actions.append(meBtn, otherBtn, delBtn);
+    wrapper.append(left, actions);
+    return wrapper;
   }
-
-  meta.append(colLen, colGenre, colYear, avail);
-
-  // Badges (Trailer + vorgeschlagen von + Status vom anderen)
-  const badges = document.createElement("div"); badges.className = "badges";
-  if (f.trailer_url) {
-    const a = document.createElement("a");
-    a.className = "badge link"; a.href = f.trailer_url; a.target = "_blank"; a.rel = "noopener";
-    a.textContent = "Trailer ▶";
-    badges.appendChild(a);
-  }
-  const p = document.createElement("span"); p.className = "badge"; p.textContent = "Vorgeschlagen von: " + f.proposer;
-  badges.appendChild(p);
-
-  // Status-Badge (anderer)
-  const status = document.createElement("span");
-  status.className = "badge";
-  if (otherVal === null) { status.style.borderColor = "#f59e0b"; status.textContent = `${otherName}: wartet …`; }
-  else if (otherVal === false) { status.style.borderColor = "#ef4444"; status.textContent = `${otherName}: Nein`; }
-  else { status.style.borderColor = "#16a34a"; status.textContent = `${otherName}: Ja`; }
-  badges.appendChild(status);
-
-  left.append(meta, badges);
-
-  // Rechte Seite (Buttons)
-  const actions = document.createElement("div"); actions.className = "yesno";
-
-  // Mein Button (optimistic toggle)
-  const meBtn = document.createElement("button");
-  const setMeBtn = (val) => {
-    meBtn.className = "pill" + (val ? "" : " no");
-    meBtn.textContent = me + (val ? " ✔" : " ✖");
-  };
-  setMeBtn(!!myVal); // null -> rot (✖) als „noch nicht bestätigt/kein Ja“
-
-  meBtn.title = "Deine Stimme umschalten";
-  meBtn.onclick = async () => {
-    const newVal = !(!!(f[myKey])); // true -> false, false/null -> true
-    const oldVal = f[myKey];
-    // Optimistic UI
-    f[myKey] = newVal; setMeBtn(newVal);
-    try {
-      const { error } = await sb().from("films").update({ [myKey]: newVal }).eq("id", f.id);
-      if (error) { f[myKey] = oldVal; setMeBtn(!!oldVal); showErr("Supabase update: " + error.message); }
-      else {
-        moveItemOptimistically(f.id, newVal, f[otherKey] === true);
-      }
-    } catch (e) { f[myKey] = oldVal; setMeBtn(!!oldVal); showErr(e.message||e); }
-  };
-
-  // Anderer (nur Anzeige)
-  const otherBtn = document.createElement("button");
-  otherBtn.className = "pill" + (otherVal ? "" : " no");
-  otherBtn.textContent = otherName + (otherVal ? " ✔" : (otherVal === false ? " ✖" : " …"));
-  otherBtn.disabled = true;
-  otherBtn.title = "Wird vom anderen bestätigt";
-
-  // Delete-Button mit Bestätigung & Optimistic Remove
-  const delBtn = document.createElement("button");
-  delBtn.className = "pill no";
-  delBtn.textContent = "Löschen 🗑";
-  delBtn.title = "Diesen Film löschen";
-  delBtn.onclick = async () => {
-    if (!confirm(`Wirklich löschen: "${f.title}"?`)) return;
-    const parent = wrapper.parentElement;
-    const divider = wrapper.nextElementSibling && wrapper.nextElementSibling.classList.contains("divider") ? wrapper.nextElementSibling : null;
-    wrapper.remove(); if (divider) divider.remove();
-    try {
-      const { error } = await sb().from("films").delete().eq("id", f.id);
-      if (error) { showErr("Supabase delete: " + error.message); parent && parent.appendChild(wrapper); if (divider) parent.appendChild(divider); }
-    } catch (e) { showErr(e.message||e); parent && parent.appendChild(wrapper); if (divider) parent.appendChild(divider); }
-  };
-
-  actions.append(meBtn, otherBtn, delBtn);
-  wrapper.append(left, actions);
-  return wrapper;
-}
 
   function renderLists(all){
     proposedList.innerHTML = ""; confirmedList.innerHTML = "";
@@ -363,7 +381,7 @@ if (!window.supabase) {
     } catch(e){ showErr(e.message||e); }
   });
 
-  // ← HIER direkt darunter die Funktion global einfügen:
+  // GLOBAL: Eintrag sofort zwischen Listen verschieben
   function moveItemOptimistically(id, myNowTrue, otherAlreadyTrue){
     const node = document.querySelector(`.film[data-id="${id}"]`);
     if (!node) return;
