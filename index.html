@@ -361,19 +361,21 @@ if (!window.supabase) {
       if (error) showErr("Supabase select: " + error.message);
       else { pingBtn.textContent = "OK ✅"; setTimeout(()=>pingBtn.textContent="Verbindung testen", 1500); }
     } catch(e){ showErr(e.message||e); }
-
-    function moveItemOptimistically(id, myNowTrue, otherAlreadyTrue){
-  const node = document.querySelector(`.film[data-id="${id}"]`);
-  if (!node) return;
-  const goConfirmed = otherAlreadyTrue && myNowTrue;
-  const target = goConfirmed ? confirmedList : proposedList;
-  if (node.parentElement === target) return;
-  const divider = node.nextElementSibling && node.nextElementSibling.classList.contains("divider") ? node.nextElementSibling : null;
-  node.remove(); if (divider) divider.remove();
-  target.appendChild(node);
-  const div = document.createElement("div"); div.className = "divider"; target.appendChild(div);
-}
   });
+
+  // ← HIER direkt darunter die Funktion global einfügen:
+  function moveItemOptimistically(id, myNowTrue, otherAlreadyTrue){
+    const node = document.querySelector(`.film[data-id="${id}"]`);
+    if (!node) return;
+    const goConfirmed = otherAlreadyTrue && myNowTrue;
+    const target = goConfirmed ? confirmedList : proposedList;
+    if (node.parentElement === target) return;
+    const divider = node.nextElementSibling && node.nextElementSibling.classList.contains("divider")
+      ? node.nextElementSibling : null;
+    node.remove(); if (divider) divider.remove();
+    target.appendChild(node);
+    const div = document.createElement("div"); div.className = "divider"; target.appendChild(div);
+  }
 
   // Initial load
   (async ()=>{ try{ await loadFilms(); }catch(e){ showErr(e.message||e); }})();
