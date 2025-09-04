@@ -39,15 +39,30 @@
 
     .muted { color: color-mix(in oklab, CanvasText 40%, Canvas 60%); }
 
-    /* Film-Zeile: Poster | Inhalt | Aktionen */
     .film {
-      display: grid;
-      grid-template-columns: 72px 1fr auto;
-      gap: 10px 12px;
-      align-items: start;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: start;
+}
+
+/* Left-Block (erstes Kind) zeigt Poster + Text nebeneinander */
+.film > div:first-child {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;          /* bricht auf kleineren Screens sauber um */
+}
+
+.film img {
+  width: 72px;
+  height: 108px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex: 0 0 auto;           /* Bild bleibt kompakt, zieht nichts breit */
+}
     }
     .film h3 { margin: 0 0 4px 0; font-size: 1rem; word-break: break-word; }
-    .film img { width: 72px; height: 108px; border-radius: 8px; object-fit: cover; display: block; }
 
     .meta {
       display: grid;
@@ -90,7 +105,7 @@
     @media (max-width: 680px) {
       body { padding: 12px; }
       .row { grid-template-columns: 1fr; }
-      .film { grid-template-columns: 64px 1fr; }
+      .film { grid-template-columns: 1fr; }
       .film img { width: 64px; height: 96px; }
       .yesno { grid-template-columns: 1fr 1fr; }
       .meta { grid-template-columns: 1fr 1fr; gap: 6px 8px; }
