@@ -84,7 +84,12 @@ a { color: inherit; text-decoration: none; }
   padding: 8px 0;
   min-width: 0;                                  /* wichtig: Kindgrids dürfen schrumpfen */
 }
-
+.film{
+  max-width: 100%;
+  overflow: hidden;            /* harter Riegel gegen Überlauf */
+}
+.film > div:first-child{ min-width: 0; }
+.card{ overflow: hidden; }     /* falls Kinder größer werden */
 .film > div:first-child{
   display: grid;
   grid-template-columns: 72px minmax(0,1fr);     /* Poster | Text */
@@ -111,29 +116,30 @@ a { color: inherit; text-decoration: none; }
 
 /* Meta-Infos */
 .meta{
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 gleich breite Spalten */
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px 10px;
   align-items: center;
   min-width: 0;
 }
 .meta .col{
+  flex: 1 1 140px;            /* wächst, darf aber umbrechen */
+  min-width: 0;
   font-size:.85rem;
   padding:4px 8px;
   border-radius:8px;
   border:1px solid color-mix(in oklab, CanvasText 12%, Canvas 88%);
   background: color-mix(in oklab, Canvas 98%, transparent);
-  max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  white-space:nowrap;                /* bleibt einzeilig */
+  white-space:nowrap;          /* einzeilig, wird gekürzt */
 }
 .meta .avail{
-  grid-column:1 / -1;
+  flex: 1 1 100%;              /* volle Breite unter den Chips */
   font-size:.9rem;
-  max-width:100%;
   word-break:break-word;
-  overflow-wrap:anywhere;            /* lange Providerlisten = weiche Trennstellen */
+  overflow-wrap:anywhere;
+  max-width:100%;
 }
 
 .badges {
